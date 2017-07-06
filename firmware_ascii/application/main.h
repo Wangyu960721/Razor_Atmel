@@ -15,7 +15,7 @@ Header file for main.c.
 #define FIRMWARE_MAIN_REV               '0'
 #define FIRMWARE_SUB_REV1               '0'
 #define FIRMWARE_SUB_REV2               '1'
-
+typedef enum {EMPTY1,BEER,SHOOTER,WINE,HIBALL}DrinkType;
 
 /***********************************************************************************************************************
 * Constant Definitions
@@ -43,6 +43,7 @@ Header file for main.c.
 Function Declarations
 **********************************************************************************************************************/
 void Timer1CallBack(void);
-
+void Set_bits(void);
+void Clear_bits(void);
 
 #endif /* __MAIN_H */

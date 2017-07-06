@@ -15,11 +15,14 @@ All Global variable names shall start with "G_"
 volatile u32 G_u32SystemFlags = 0;                     /* Global system flags */
 volatile u32 G_u32ApplicationFlags = 0;                /* Global applications flags: set when application is successfully initialized */
 u32 uBianliang;
+u8 u8DataCheckBit;
+u16 u16NumBit=0XA5;
+u16 u16NumClearBit=0xFF;
+
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* External global variables defined in other files (must indicate which file they are defined in) */
 extern volatile u32 G_u32SystemTime1ms;                /* From board-specific source file */
 extern volatile u32 G_u32SystemTime1s;                 /* From board-specific source file */
-
 
 /***********************************************************************************************************************
 Global variable definitions with scope limited to this local application.
@@ -37,12 +40,30 @@ contraints but must complete execution regardless of success or failure of start
 2. Super loop which runs infinitely giving processor time to each application.  The total loop time should not exceed
 1ms of execution time counting all application execution.  SystemSleep() will execute to complete the remaining time in
 the 1ms period.
-***********************************************************************************************************************/
+**********************************************************************************************************************/
+void Set_bits(void)
+{
+ u16NumBit|=BIT1;
+}
+void Clear_bits(void)
+{
 
+u16NumClearBit&=(~BIT1);
+}
 void main(void)
 {
   G_u32SystemFlags |= _SYSTEM_INITIALIZING;
-  uBianliang=0;
+  uBianliang=MAX_DRINKS;
+  u8DataCheckBit=0xA5;
+  u8DataCheckBit=u8DataCheckBit<<4;
+  DrinkType aeDrinkArray1[]={BEER,SHOOTER};
+  DrinkType aeDrinkArray2[]={WINE,HIBALL};
+  u8 au8Array1[] = {'H','E','L','L','O'};
+  u8 au8Array2[] = "HELLO";
+  u8 au8Array3[] = {72,69,76,76,79};
+  u8 au8Array4[] = {72,69,76,76,79,0};
+  Set_bits();
+  Clear_bits();
   /* Low level initialization */
   WatchDogSetup(); /* During development, does not reset processor if timeout */
   GpioSetup();
