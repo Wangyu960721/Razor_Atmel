@@ -28,7 +28,12 @@ extern volatile u32 G_u32SystemTime1s;                 /* From board-specific so
 Global variable definitions with scope limited to this local application.
 Variable names shall start with "Main_" and be declared as static.
 ***********************************************************************************************************************/
-
+typedef struct
+{
+  u8 u8ServerNumber;                    /* Unique token for this item */
+  DrinkType asServingTray[MAX_DRINKS];  /* Data payload array */
+  void* psNextServer;                   /* Pointer to next ServerType*/
+} ServerType;
 
 /***********************************************************************************************************************
 Main Program
@@ -41,29 +46,17 @@ contraints but must complete execution regardless of success or failure of start
 1ms of execution time counting all application execution.  SystemSleep() will execute to complete the remaining time in
 the 1ms period.
 **********************************************************************************************************************/
-void Set_bits(void)
-{
- u16NumBit|=BIT1;
-}
-void Clear_bits(void)
-{
 
-u16NumClearBit&=(~BIT1);
-}
 void main(void)
 {
   G_u32SystemFlags |= _SYSTEM_INITIALIZING;
-  uBianliang=MAX_DRINKS;
-  u8DataCheckBit=0xA5;
-  u8DataCheckBit=u8DataCheckBit<<4;
-  DrinkType aeDrinkArray1[]={BEER,SHOOTER};
-  DrinkType aeDrinkArray2[]={WINE,HIBALL};
-  u8 au8Array1[] = {'H','E','L','L','O'};
-  u8 au8Array2[] = "HELLO";
-  u8 au8Array3[] = {72,69,76,76,79};
-  u8 au8Array4[] = {72,69,76,76,79,0};
-  Set_bits();
-  Clear_bits();
+u8 u8CurrentServer;
+ServerType sServer1;
+ServerType* psServerParser;
+
+psServerParser = &sServer1;
+sServer1.u8ServerNumber = 18;
+u8CurrentServer = psServerParser->u8ServerNumber;
   /* Low level initialization */
   WatchDogSetup(); /* During development, does not reset processor if timeout */
   GpioSetup();
@@ -127,9 +120,9 @@ void main(void)
     UserApp3RunActiveState();
     
     /* System sleep*/
-    HEARTBEAT_OFF();
+    //HEARTBEAT_OFF();
     SystemSleep();
-    HEARTBEAT_ON();
+    //HEARTBEAT_ON();
     
   } /* end while(1) main super loop */
   

@@ -86,8 +86,14 @@ Promises:
   - 
 */
 void UserApp1Initialize(void)
-{
- 
+{         LedOff(WHITE);
+          LedOff(RED);
+          LedOff(PURPLE);
+          LedOff(BLUE);
+          LedOff(ORANGE);
+          LedOff(CYAN);
+          LedOff(GREEN);
+          LedOff(YELLOW);
   /* If good initialization, set state to Idle */
   if( 1 )
   {
@@ -134,19 +140,128 @@ State Machine Function Definitions
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 /* Wait for ??? */
-static void UserApp1SM_Idle(void)
+static void UserApp1SM_Idle(void) 
 {
-
-} /* end UserApp1SM_Idle() */
+    static u16 u16Counter=0;
+    static LedRateType eLedDutyLevel=LED_PWM_0;
+    static LedNumberType eLedNo=WHITE;
+    static bool bOk=0;
     
+    u16Counter++;
+	
+    if(u16Counter==1)//1ms
+	{
+          u16Counter=0;
+          LedPWM(eLedNo,eLedDutyLevel);
 
+          if(eLedNo==8)//eight leds
+            {
+              eLedNo=0;
+            }
+          
+          if(bOk<20)//up
+          {
+            eLedDutyLevel++;
+            bOk++;
+          }
+          else//down
+          {
+            if(bOk>=20&&bOk<=39)
+            {
+              eLedDutyLevel--;
+              bOk++;
+              if(bOk==40)
+               {
+                 bOk=0;
+               }
+              if(eLedDutyLevel==LED_PWM_0)
+               {
+                  LedPWM(eLedNo,eLedDutyLevel);
+                  eLedNo++;
+               }            
+
+            }
+          }//end else
+	}//end if
+}//end UserApp1SM_Idle
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*if(IsButtonPressed(BUTTON1))
+  {
+      LedToggle(PURPLE);
+  }
+       
+  if(IsButtonPressed(BUTTON2))
+  {
+      LedToggle(BLUE);
+  }*/
+  
+
+  
+  /*if(IsButtonPressed(BUTTON1))
+  {
+    u8ButtonPressedNum=1;
+  }
+  
+  if(IsButtonPressed(BUTTON2))
+  {
+    u8ButtonPressedNum=2;
+  }
+  
+  if(IsButtonPressed(BUTTON3))
+  {
+    u8ButtonPressedNum=3;
+  }
+    
+  switch(u8ButtonPressedNum)
+  { 
+      case 0:
+          LedOn(WHITE);
+          u8ButtonPressedNum=0;
+          break;
+      case 1:
+          LedOn(RED);
+          u8ButtonPressedNum=0;
+          break;
+      case 2:
+          LedOn(PURPLE);
+          u8ButtonPressedNum=0;
+          break;
+      case 3:
+          LedOff(WHITE);
+          LedOff(RED);
+          LedOff(PURPLE);
+          u8ButtonPressedNum=0;
+          break;
+      default:
+          break;
+  }*/
+          
+//end usser app1
 /*-------------------------------------------------------------------------------------------------------------------*/
 /* Handle an error */
 static void UserApp1SM_Error(void)          
 {
   
 } /* end UserApp1SM_Error() */
-
 
 
 /*--------------------------------------------------------------------------------------------------------------------*/
