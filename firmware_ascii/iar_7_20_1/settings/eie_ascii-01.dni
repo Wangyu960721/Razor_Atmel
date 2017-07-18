@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-233304312
+Checksum=-1910965583
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -24,6 +24,18 @@ CStepIntDis=_ 0
 TraceBufferSize=0x00010000
 TraceStallIfFIFOFull=0x00000000
 TracePortSize=0x00000000
+[watch_formats]
+Fmt0={W}1:UserApp_CursorPosition	3	0
+Fmt1={W}1:au8TimeCounter	3	0
+Fmt2={W}1:u8DebugNo	3	0
+Fmt3={W}1:u8TimeCounter	3	0
+Fmt4={W}1:u8TimeCounter1	3	0
+Fmt5={W}1:u8UserApp_CursorPosition	3	0
+Fmt6={W}1:u8i	3	0
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -31,18 +43,20 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Aliases]
+A0=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_ascii\application\main.c" ""
+A1=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\cmsis\core_cm3.h" "D:\EiE\GitHub\test\Òº¾§ÆÁ×Ö·ûÏÔÊ¾\firmware_common\cmsis\core_cm3.h"
+A2=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\drivers\ant_api.c" ""
+A3=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\drivers\buttons.c" ""
+A4=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\drivers\interrupts.c" "D:\EiE\GitHub\test\Òº¾§ÆÁ×Ö·ûÏÔÊ¾\firmware_common\drivers\interrupts.c"
+A5=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\drivers\timer.c" ""
+Count=6
+SuppressDialog=1
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
 Enabled=0
-Mode=1
+Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
-[Aliases]
-Count=0
-SuppressDialog=0

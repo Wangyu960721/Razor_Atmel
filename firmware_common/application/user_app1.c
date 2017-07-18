@@ -87,8 +87,19 @@ Promises:
 */
 void UserApp1Initialize(void)
 {
- 
-  /* If good initialization, set state to Idle */
+  		LedOff(WHITE);
+		LedOff(RED);
+		LedOff(YELLOW);
+		LedOff(ORANGE);
+		LedOff(PURPLE);
+		LedOff(CYAN);
+		LedOff(BLUE);
+		LedOff(GREEN);
+		LCDCommand(LCD_CLEAR_CMD);
+
+
+  /* If good initialization, set state 
+		to Idle */
   if( 1 )
   {
     UserApp1_StateMachine = UserApp1SM_Idle;
@@ -135,8 +146,159 @@ State Machine Function Definitions
 /*-------------------------------------------------------------------------------------------------------------------*/
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
-{
+{	
+  	static u8 i=0;
+  	static u8 u8i;
+	static u8 u8Ok=0;
+  	static u8 u8DebugNo=0;
+	static u8 u8TimeCounter=0;
+	static u8 u8TimeCounter1=0;
+	static u8 u8Frequency=2;
+	static u8 UserApp_CursorPosition=LINE1_END_ADDR;
 
+	static u8 au8InputBuffer[255]={0,0};
+	static u8 au8Array1[20]={0,0};
+	static u8 au8Array2[20]={0,0};
+	static LedNumberType eLedNo=0;
+	
+
+	u8TimeCounter++;
+	
+	if(WasButtonPressed(BUTTON2))
+	{
+	  	u8Ok=1;
+		ButtonAcknowledge(BUTTON2);
+		u8DebugNo=DebugScanf(au8InputBuffer);
+	}
+	if(u8Ok==1)
+	{
+		if(u8DebugNo>40)
+		{
+			if(u8TimeCounter==200)
+			{
+				
+				
+				if((UserApp_CursorPosition+1)==LINE1_START_ADDR)
+				{
+					LCDMessage(LINE1_START_ADDR,&au8InputBuffer[++i]);
+					LCDClearChars(LINE2_START_ADDR ,20);
+					if(i==u8DebugNo)
+					{
+						i=0;
+					}
+				}
+				else
+				{
+					LCDMessage(UserApp_CursorPosition, au8InputBuffer);
+					LCDClearChars(LINE2_START_ADDR ,20);
+					UserApp_CursorPosition--;
+				}
+				
+				
+				LedPWM(eLedNo,LED_PWM_60);
+				PWMAudioSetFrequency(BUZZER1,u8Frequency);
+				PWMAudioOn(BUZZER1);
+				eLedNo++;
+				u8Frequency*=2;
+				
+				if(eLedNo==9)
+				{
+					eLedNo=0;
+					LedOff(WHITE);
+					LedOff(RED);
+					LedOff(YELLOW);
+					LedOff(ORANGE);
+					LedOff(PURPLE);
+					LedOff(CYAN);
+					LedOff(BLUE);
+					LedOff(GREEN);
+				}
+				
+				if(u8Frequency==5120)
+				{
+					u8Frequency=10;
+				}
+				
+				u8TimeCounter=0;
+			}
+			
+		}
+		else
+		{			
+			for(u8i=0;u8i<20;u8i++)
+			{
+				au8Array1[u8i]=au8InputBuffer[u8i];
+			}
+			
+			for(u8i=20;u8i<40;u8i++)
+			{
+				au8Array2[u8i-20]=au8InputBuffer[u8i];
+			}		
+			
+			
+			
+			u8TimeCounter1++;
+			
+			if(u8TimeCounter1==100)
+			{
+			  	LCDMessage(LINE1_START_ADDR,au8Array1);
+				LCDMessage(LINE2_START_ADDR,au8Array2);
+				u8TimeCounter1=0;
+			}
+		
+		}
+	
+			if(u8TimeCounter==200)
+			{
+
+				LedPWM(eLedNo,LED_PWM_30);
+				PWMAudioSetFrequency(BUZZER1,u8Frequency);
+				PWMAudioOn(BUZZER1);
+				eLedNo++;
+				u8Frequency*=2;
+				
+				
+				if(eLedNo==9)
+				{
+					eLedNo=0;
+					LedOff(WHITE);
+					LedOff(RED);
+					LedOff(YELLOW);
+					LedOff(ORANGE);
+					LedOff(PURPLE);
+					LedOff(CYAN);
+					LedOff(BLUE);
+					LedOff(GREEN);
+								
+				}
+				if(u8Frequency==5120)
+				{
+					u8Frequency=10;
+				}
+				
+				u8TimeCounter=0;
+			}
+	}
+
+	
+	if(WasButtonPressed(BUTTON0))
+	{
+	  	ButtonAcknowledge(BUTTON0);
+		LedOff(WHITE);
+		LedOff(RED);
+		LedOff(YELLOW);
+		LedOff(ORANGE);
+		LedOff(PURPLE);
+		LedOff(CYAN);
+		LedOff(BLUE);
+		LedOff(GREEN);
+	}
+	if(WasButtonPressed(BUTTON1))
+	{
+	  	ButtonAcknowledge(BUTTON1);
+		DebugPrintf(au8InputBuffer);
+	}
+	
 } /* end UserApp1SM_Idle() */
     
 
@@ -144,7 +306,6 @@ static void UserApp1SM_Idle(void)
 /* Handle an error */
 static void UserApp1SM_Error(void)          
 {
-  
 } /* end UserApp1SM_Error() */
 
 

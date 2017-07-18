@@ -71,15 +71,15 @@ space can be used for scrolling displays.
 #define		LCD_CLEAR_CMD				(u8)0x01		/* Writes spaces to all chars */
 #define		LCD_HOME_CMD				(u8)0x02		/* Puts cursor at 0x00 */
 
-#define		LCD_CURSOR_RT_CMD		(u8)0x06		/* Cursor moves right after char */
+#define		LCD_CURSOR_RT_CMD		(u8)0x06		/* Cursor moves right after char光标移动到字符右边 */
 #define		LCD_CURSOR_LT_CMD		(u8)0x04		/* Cursor moves left after char */
 #define   LCD_DISPLAY_RT_CMD  (u8)0x05    /* Entire display shifts right after each write */
 #define   LCD_DISPLAY_LT_CMD  (u8)0x07    /* Entire display shifts left after each write */
 
-#define		LCD_DISPLAY_CMD			(u8)0x08		/* Root literal for managing display */
+#define		LCD_DISPLAY_CMD			(u8)0x08		/* Root literal for managing display 停止显示*/
 #define		LCD_DISPLAY_ON			(u8)0x04		/* OR with LCD_DISPLAY_CMD to turn display on */
-#define		LCD_DISPLAY_CURSOR	(u8)0x02		/* OR with LCD_DISPLAY_CMD to turn cursor on */
-#define		LCD_DISPLAY_BLINK		(u8)0x01		/* OR with LCD_DISPLAY_CMD to turn cursor blink on */
+#define		LCD_DISPLAY_CURSOR	(u8)0x02		/* OR with LCD_DISPLAY_CMD to turn cursor on 显示光标（前两个或|一下）*/
+#define		LCD_DISPLAY_BLINK		(u8)0x01		/* OR with LCD_DISPLAY_CMD to turn cursor blink on 光标闪烁*/
 
 #define		LCD_SHIFT_CMD				(u8)0x10		/* Root literal for display / cursor shift commands */
 #define		LCD_SHIFT_DISPLAY		(u8)0x08		/* Set to operate on dislay, clear for cursor */
