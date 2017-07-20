@@ -46,17 +46,16 @@ contraints but must complete execution regardless of success or failure of start
 1ms of execution time counting all application execution.  SystemSleep() will execute to complete the remaining time in
 the 1ms period.
 **********************************************************************************************************************/
-
 void main(void)
 {
-  G_u32SystemFlags |= _SYSTEM_INITIALIZING;
-u8 u8CurrentServer;
-ServerType sServer1;
-ServerType* psServerParser;
+	G_u32SystemFlags |= _SYSTEM_INITIALIZING;
+	u8 u8CurrentServer;
+	ServerType sServer1;
+	ServerType* psServerParser;
 
-psServerParser = &sServer1;
-sServer1.u8ServerNumber = 18;
-u8CurrentServer = psServerParser->u8ServerNumber;
+	psServerParser = &sServer1;
+	sServer1.u8ServerNumber = 18;
+	u8CurrentServer = psServerParser->u8ServerNumber;
   /* Low level initialization */
   WatchDogSetup(); /* During development, does not reset processor if timeout */
   GpioSetup();

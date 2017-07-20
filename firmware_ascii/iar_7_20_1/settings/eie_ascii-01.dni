@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1612045653
+Checksum=1474125939
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -33,10 +33,6 @@ Fmt1={W}2:bOk	3	0
 Fmt2={W}2:eLedNo	3	0
 Fmt3={W}2:u16NumBit	1	0
 Fmt4={W}2:u16NumClearBit	1	0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -44,9 +40,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-Count=0
-SuppressDialog=0
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -55,3 +48,14 @@ Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+A0=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_ascii\application\main.c" ""
+A1=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_ascii\drivers\lcd_nhd-c0220biz.c" ""
+A2=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\cmsis\core_cm3.h" ""
+A3=_ "D:\EiE\GitHub\test\Razor_Atmel\firmware_common\drivers\timer.c" ""
+Count=4
+SuppressDialog=1

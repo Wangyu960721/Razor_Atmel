@@ -52,6 +52,9 @@ extern volatile u32 G_u32ApplicationFlags;             /* From main.c */
 extern volatile u32 G_u32SystemTime1ms;                /* From board-specific source file */
 extern volatile u32 G_u32SystemTime1s;                 /* From board-specific source file */
 
+extern u8 G_au8DebugScanfBuffer[];  /* From debug.c */
+extern u8 G_u8DebugScanfCharCount;  /* From debug.c */
+
 
 /***********************************************************************************************************************
 Global variable definitions with scope limited to this local application.
@@ -86,14 +89,27 @@ Promises:
   - 
 */
 void UserApp1Initialize(void)
-{         LedOff(WHITE);
-          LedOff(RED);
-          LedOff(PURPLE);
-          LedOff(BLUE);
-          LedOff(ORANGE);
-          LedOff(CYAN);
-          LedOff(GREEN);
-          LedOff(YELLOW);
+		{       LedOff(WHITE);
+				LedOff(RED);
+				LedOff(PURPLE);
+				LedOff(BLUE);
+				LedOff(ORANGE);
+				LedOff(CYAN);
+				LedOff(GREEN);
+				LedOff(YELLOW);
+				u8 u8String[] = "A string to print that returns cursor to start of next line.\n\r";
+				u8 u8String2[] = "Here's a number: ";
+				u8 u8String3[] = " < The 'cursor' was here after the number.";
+				u32 u32Number = 1234567;
+
+				DebugPrintf(u8String);
+				DebugPrintf(u8String2);
+				DebugPrintNumber(u32Number);
+				DebugPrintf(u8String3);
+				DebugLineFeed();
+				DebugPrintf(u8String3);
+				DebugLineFeed();
+
   /* If good initialization, set state to Idle */
   if( 1 )
   {
@@ -140,9 +156,134 @@ State Machine Function Definitions
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 /* Wait for ??? */
-static void UserApp1SM_Idle(void) 
-{
-    static u16 u16Counter=0;
+/* Wait for a message to be queued */
+static void UserApp1SM_Idle(void)
+{	
+  	static u32 u32Counter=0;
+	static u8 u8Timer=0;
+	static u8 au8Postion[16]={1,1,3,3,6,6,8,8,11,11,13,13,16,16,18,18};
+	static u8 au8Time[4]={0,0,0,0};
+	static u8 au8CharTime[4];
+	
+	typedef struct
+	{
+		LedNumberType eLed;
+		u32 u32TimeCounter;
+		bool bOn;
+		LedRateType eCurrentRate;
+	}LedCommandType;
+	
+	LedCommandType asDemo[]=
+	{
+	  {WHITE,1000,TRUE,LED_PWM_100},
+	  {WHITE,6000,FALSE,LED_PWM_0},
+	  {PURPLE,3000,TRUE,LED_PWM_100},
+	  {PURPLE,9000,FALSE,LED_PWM_0},
+	  {BLUE,2000,TRUE,LED_PWM_100},
+	  {BLUE,3000,FALSE,LED_PWM_0},
+	  {CYAN,4000,TRUE,LED_PWM_100},
+	  {CYAN,9000,FALSE,LED_PWM_0},
+	  {GREEN,2000,TRUE,LED_PWM_100},
+	  {GREEN,4000,FALSE,LED_PWM_0},
+	  {YELLOW,3000,TRUE,LED_PWM_100},
+	  {YELLOW,5000,FALSE,LED_PWM_0},
+	  {ORANGE,5000,TRUE,LED_PWM_100},
+	  {ORANGE,8000,FALSE,LED_PWM_0},
+	  {RED,1000,FALSE,LED_PWM_100},
+	  {RED,8000,TRUE,LED_PWM_0}		
+	};//the command
+	
+	u32Counter++;
+	au8Time[0]=u32Counter/1000;// the bit of time
+	au8Time[1]=(u32Counter%1000)/100;
+	au8Time[2]=(u32Counter%100)/10;
+	au8Time[3]=u32Counter%10;
+
+	au8CharTime[0]=au8Time[0]+'0'; //make into chars
+	au8CharTime[1]=au8Time[1]+'0';
+	au8CharTime[2]=au8Time[2]+'0';
+	au8CharTime[3]=au8Time[3]+'0';
+    if(u32Counter%100==0)
+	{
+	  LCDMessage(LINE2_START_ADDR+8,au8CharTime);//display the chars
+	}
+
+	if(u32Counter==10000)
+	{
+		u32Counter=0;
+	}
+	
+	for(u8 i=0;i<16;i++)
+	{
+		if(u32Counter==asDemo[i].u32TimeCounter)
+		{
+			LedPWM(asDemo[i].eLed,asDemo[i].eCurrentRate);
+			if(asDemo[i].eCurrentRate==LED_PWM_0)
+			{
+				LCDMessage(LINE1_START_ADDR + au8Postion[i],"0");
+			}
+			else
+			{
+				LCDMessage(LINE1_START_ADDR +au8Postion[i],"1");
+			}
+			
+			u8Timer++;
+		}
+	}
+		
+}/* end UserApp1SM_Idle() */
+   
+
+
+/*  static u8 u8KeyValue=0
+  static u8 au8PassWord[4]="123";
+  static u8 i=0;
+  static u8 au8InPut[4]="000";
+  
+    LedOn(RED);
+  if(i<3)
+  {
+    if(WasButtonPressed(BUTTON0))
+    {
+      u8KeyValue=1;
+      ButtonAcknowledge(BUTTON0);
+      au8InPut[i]=1;
+      i++;
+    }
+
+    if(IsButtonPressed(BUTTON1))
+    {
+      u8KeyValue=2;
+      ButtonAcknowledge(BUTTON1);
+      au8InPut[i]=2;
+      i++;
+    }
+  
+    if(IsButtonPressed(BUTTON2))
+    {
+      u8KeyValue=3;
+      ButtonAcknowledge(BUTTON2);
+      au8InPut[i]=3;
+      i++;
+    }
+  }
+  if(WasButtonPressed(BUTTON3))
+  {
+    ButtonAcknowledge(BUTTON3);
+    if(strcmp(au8PassWord,au8InPut)==0)
+    {
+      LedBlink(GREEN,LED_8HZ);
+    }
+    else
+    {
+      LedOff(RED);
+      LedBlink(RED,LED_8HZ);
+    }
+  }
+  
+}*/
+  
+  /*{static u16 u16Counter=0;
     static LedRateType eLedDutyLevel=LED_PWM_0;
     static LedNumberType eLedNo=WHITE;
     static bool bOk=0;
@@ -152,6 +293,7 @@ static void UserApp1SM_Idle(void)
     if(u16Counter==1)//1ms
 	{
           u16Counter=0;
+
           LedPWM(eLedNo,eLedDutyLevel);
 
           if(eLedNo==8)//eight leds
@@ -183,37 +325,8 @@ static void UserApp1SM_Idle(void)
             }
           }//end else
 	}//end if
-}//end UserApp1SM_Idle
- 
+  }//end UserApp1SM_Idle*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*if(IsButtonPressed(BUTTON1))
-  {
-      LedToggle(PURPLE);
-  }
-       
-  if(IsButtonPressed(BUTTON2))
-  {
-      LedToggle(BLUE);
-  }*/
-  
 
   
   /*if(IsButtonPressed(BUTTON1))
