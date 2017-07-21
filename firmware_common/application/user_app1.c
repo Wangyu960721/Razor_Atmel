@@ -148,6 +148,85 @@ void UserApp1RunActiveState(void)
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Private functions                                                                                                  */
 /*--------------------------------------------------------------------------------------------------------------------*/
+static bool CheckCMDString(u8*pu8CMDToCheck)
+		{
+		  	u8 u8Ok=0;
+			bool bOk=FALSE;
+			u8 u8OnTime=0;
+			u8 u8OffTime=0;
+			u8 u8Array1No=0;
+			u8 u8Array2No=0;
+			u8 au8CompareArray1[4];
+			u8 au8CompareArray2[4];
+			static u8 au8LedName[16]={'R','B','Y','C','W','P','O','G','r','b','y','c','w','p','o','g'};
+			u8 *pu8Parser;
+			pu8Parser=pu8CMDToCheck;
+			for(u8 i=0;i<sizeof(au8LedName);i++)
+			{
+				if(*pu8Parser==au8LedName[i])
+				{
+					pu8Parser++;
+				}
+			}
+			if(*pu8Parser=='-')
+			{
+			  	pu8Parser++;
+				for(;*pu8Parser!='-';pu8Parser++)
+				{
+				  	au8CompareArray1[u8Array1No++]=*pu8Parser;
+				  	if(*pu8Parser>='0'&&*pu8Parser<='9')
+					{
+						u8OnTime++;
+						if(u8OnTime>4)
+						{
+							return FALSE;
+						}
+					}
+				}
+				pu8Parser++;
+				for(;*pu8Parser!=0x0D;pu8Parser++)
+				{
+					au8CompareArray2[u8Array2No++]=*pu8Parser;
+					if(*pu8Parser>='0'&&*pu8Parser<='9')
+					{
+						u8OffTime++;
+						if(u8OffTime>4)
+						{
+							return FALSE;
+						}
+					}
+				}
+				if(u8OnTime>u8OffTime)
+				{
+					LedBlink(RED,63);
+					bOk=TRUE;
+					return FALSE;
+				}
+				if(u8OnTime==u8OffTime)
+				{
+					for(u8 u8Num3=0;u8Num3<u8OnTime;u8Num3++)
+					{
+						if(au8CompareArray1[u8Num3]>au8CompareArray2[u8Num3])
+						{
+							LedBlink(RED,63);
+							bOk=TRUE;
+							return FALSE;
+						}
+					}
+				}
+			}
+			else
+			{
+				return FALSE;
+			}
+			
+			if(bOk==FALSE)
+			{
+				LedBlink(WHITE,63);
+				return TRUE;
+			}
+	
+		}
 
 
 /**********************************************************************************************************************

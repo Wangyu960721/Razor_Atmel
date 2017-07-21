@@ -71,7 +71,7 @@
         <expressions>
           
           
-        <item>au8InPut[i]</item><item>i</item><item>au8Buffer</item><item>G_u8DebugScanfCharCount</item><item></item></expressions>
+        <item>au8InPut[i]</item><item>i</item><item>au8Buffer</item><item>G_u8DebugScanfCharCount</item><item/></expressions>
         <col-names>
           
           
