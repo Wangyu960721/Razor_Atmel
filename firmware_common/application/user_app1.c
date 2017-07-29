@@ -237,80 +237,116 @@ State Machine Function Definitions
 /* Wait for ??? */
 /* Wait for a message to be queued */
 static void UserApp1SM_Idle(void)
-{	
-  	static u32 u32Counter=0;
-	static u8 u8Timer=0;
-	static u8 au8Postion[16]={1,1,3,3,6,6,8,8,11,11,13,13,16,16,18,18};
-	static u8 au8Time[4]={0,0,0,0};
-	static u8 au8CharTime[4];
+{
+    static u8 au8InputBuffer[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static u8 u8CompareWord1=0;
+	static u8 u8CompareWord2=0;
+	static u8 u8CompareWord3=0;
+	static u8 u8Ok=0;
+	static u8 i;
+	static bool bOk=FALSE;
+	static u8 u8Num1=0;
+	static u8 u8Num2=0;
+	static u8 u8Num3=0;
+	static u8 au8ComapreArray2[]={0,0,0,0,0,0,0,0,0,0,0,0,0};
+	static u8 au8ComapreArray3[]={0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
-	typedef struct
-	{
-		LedNumberType eLed;
-		u32 u32TimeCounter;
-		bool bOn;
-		LedRateType eCurrentRate;
-	}LedCommandType;
+	 
+	if(WasButtonPressed(BUTTON0))
+	{	
+		ButtonAcknowledge(BUTTON0);	   	
+		DebugScanf(au8InputBuffer);
 	
-	LedCommandType asDemo[]=
-	{
-	  {WHITE,1000,TRUE,LED_PWM_100},
-	  {WHITE,6000,FALSE,LED_PWM_0},
-	  {PURPLE,3000,TRUE,LED_PWM_100},
-	  {PURPLE,9000,FALSE,LED_PWM_0},
-	  {BLUE,2000,TRUE,LED_PWM_100},
-	  {BLUE,3000,FALSE,LED_PWM_0},
-	  {CYAN,4000,TRUE,LED_PWM_100},
-	  {CYAN,9000,FALSE,LED_PWM_0},
-	  {GREEN,2000,TRUE,LED_PWM_100},
-	  {GREEN,4000,FALSE,LED_PWM_0},
-	  {YELLOW,3000,TRUE,LED_PWM_100},
-	  {YELLOW,5000,FALSE,LED_PWM_0},
-	  {ORANGE,5000,TRUE,LED_PWM_100},
-	  {ORANGE,8000,FALSE,LED_PWM_0},
-	  {RED,1000,FALSE,LED_PWM_100},
-	  {RED,8000,TRUE,LED_PWM_0}		
-	};//the command
-	
-	u32Counter++;
-	au8Time[0]=u32Counter/1000;// the bit of time
-	au8Time[1]=(u32Counter%1000)/100;
-	au8Time[2]=(u32Counter%100)/10;
-	au8Time[3]=u32Counter%10;
-
-	au8CharTime[0]=au8Time[0]+'0'; //make into chars
-	au8CharTime[1]=au8Time[1]+'0';
-	au8CharTime[2]=au8Time[2]+'0';
-	au8CharTime[3]=au8Time[3]+'0';
-    if(u32Counter%100==0)
-	{
-	  LCDMessage(LINE2_START_ADDR+8,au8CharTime);//display the chars
-	}
-
-	if(u32Counter==10000)
-	{
-		u32Counter=0;
-	}
-	
-	for(u8 i=0;i<16;i++)
-	{
-		if(u32Counter==asDemo[i].u32TimeCounter)
+		if((au8InputBuffer[0]>='a'&&au8InputBuffer[0]<='z')||(au8InputBuffer[0]>='A'&&au8InputBuffer[0]<='Z'))
 		{
-			LedPWM(asDemo[i].eLed,asDemo[i].eCurrentRate);
-			if(asDemo[i].eCurrentRate==LED_PWM_0)
+			if(au8InputBuffer[1]=='-')
 			{
-				LCDMessage(LINE1_START_ADDR + au8Postion[i],"0");
+			  	for(u8CompareWord1=2;au8InputBuffer[u8CompareWord1]!='-';u8CompareWord1++)
+				{
+				  	au8ComapreArray2[u8CompareWord1-2]=au8InputBuffer[u8CompareWord1];
+				}
+					
+					for(u8CompareWord2=0;u8CompareWord2<(u8CompareWord1-2);u8CompareWord2++)//compare with each number
+					{
+						if(au8ComapreArray2[u8CompareWord2]>='0'&&u8CompareWord2<='9')
+						{
+						  	u8Ok++;
+						}
+					}
+				
+				if(u8Ok==u8CompareWord1-2)//each word is number
+				{
+					if(au8InputBuffer[u8CompareWord1]=='-')
+					{
+						for(u8CompareWord3=(u8CompareWord1+1);au8InputBuffer[u8CompareWord3]!=' ';u8CompareWord3++)//u8CompareWord1+1 is the first subscript of the second number
+						{
+						  	 
+							 au8ComapreArray3[u8CompareWord3-(u8CompareWord1+1)]=au8InputBuffer[u8CompareWord3];//put the second number into another array
+						}
+						
+						for(i=0;i<13;i++)
+						{
+							if(au8ComapreArray3[i]!='\0')
+							{
+								u8Num1++;
+							}
+							
+							if(au8ComapreArray2[i]!='\0')
+							{
+								u8Num2++;
+							}
+						}
+						
+						if(u8Num1>u8Num2)
+						{
+							LedBlink(RED,63);
+							bOk=TRUE;
+						}
+						if(u8Num1=u8Num2)
+						{
+						  	for(u8Num3=0;u8Num3<u8Num1;u8Num3++)
+							{
+								if(au8ComapreArray3[u8Num3]>au8ComapreArray2[u8Num3])
+								{
+									LedBlink(RED,63);
+									bOk=TRUE;
+								}
+							}
+						}
+
+					}
+				}
+					
+	
 			}
-			else
-			{
-				LCDMessage(LINE1_START_ADDR +au8Postion[i],"1");
-			}
-			
-			u8Timer++;
+		}
+		
+		if(bOk==FALSE)
+		{
+			LedBlink(WHITE,63);
+		}
+		
+	}
+	
+	if(WasButtonPressed(BUTTON1))
+	{
+		ButtonAcknowledge(BUTTON1);
+		LedOff(WHITE);
+		LedOff(RED);
+		DebugLineFeed();
+		bOk=FALSE;
+		u8Ok=0;
+		for(u8 u8n=0;u8n<14;u8n++)
+		{
+			au8ComapreArray3[u8n]=0;
+			au8InputBuffer[u8n]=0;
+			au8ComapreArray2[u8n]=0;
 		}
 	}
-		
+	
+
 }/* end UserApp1SM_Idle() */
+
    
 
 
