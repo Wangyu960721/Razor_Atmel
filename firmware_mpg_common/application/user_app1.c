@@ -198,6 +198,8 @@ static void UserApp1SM_AntChannelAssign()
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
+  static u8 u8Counter=0;
+  
   static u8 au8TestMessage[] = {0, 0, 0, 0, 0xA5, 0, 0, 0};
   u8 au8DataContent[] = "xxxxxxxxxxxxxxxx";
   
@@ -242,6 +244,7 @@ static void UserApp1SM_Idle(void)
 
 #ifdef EIE1
       LCDMessage(LINE2_START_ADDR, au8DataContent);
+	  u8Counter++;
 #endif /* EIE1 */
       
 #ifdef MPG2
@@ -250,17 +253,22 @@ static void UserApp1SM_Idle(void)
     }
     else if(G_eAntApiCurrentMessageClass == ANT_TICK)
     {
+	  if(u8Counter!=0)
+	  {
+		u8Counter=0;
      /* Update and queue the new message data */
-      au8TestMessage[7]++;
-      if(au8TestMessage[7] == 0)
-      {
-        au8TestMessage[6]++;
-        if(au8TestMessage[6] == 0)
-        {
-          au8TestMessage[5]++;
-        }
-      }
-      AntQueueBroadcastMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+
+		  au8TestMessage[7]++;
+		  if(au8TestMessage[7] == 0)
+		  {
+			au8TestMessage[6]++;
+			if(au8TestMessage[6] == 0)
+			{
+			  au8TestMessage[5]++;
+			}
+		  }
+		  AntQueueBroadcastMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+	  }
     }
   } /* end AntReadData() */
   
